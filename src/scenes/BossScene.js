@@ -182,6 +182,9 @@ export default class BossScene extends BaseLevelScene {
   }
 
   handleVictory() {
+    if (this._victoryHandled) return;
+    this._victoryHandled = true;
+
     if (this.boss && this.boss.active) this.boss.destroy();
     this.hero.setActive(false);
     this.hero.setVelocity(0, 0);
@@ -190,6 +193,9 @@ export default class BossScene extends BaseLevelScene {
     state.hp = Math.min(this.hero.hp + 1, this.hero.maxHp);
     state.abilityCount = state.abilityCount + 1;
     state.unlockedLevels = Math.max(state.unlockedLevels, this.levelNumber + 1);
+    state.inBoss = false;
+    state.bossHP = 0;
+    state.bossMaxHP = 0;
     saveManager.save();
     audio.victory();
 
@@ -210,8 +216,8 @@ export default class BossScene extends BaseLevelScene {
     btn.on('pointerout', () => btn.setColor('#FFFFFF'));
 
     btn.on('pointerdown', () => {
+      this.scene.stop('HUDScene');
       if (nextLevel === null) {
-        this.scene.stop('HUDScene');
         this.scene.start('GameOverScene', { won: true });
       } else {
         this.scene.start('GameScene', { level: nextLevel });

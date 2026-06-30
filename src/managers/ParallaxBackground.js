@@ -22,17 +22,21 @@ export default class ParallaxBackground {
     const textureKey = 'bg' + levelNumber;
     if (scene.textures.exists(textureKey)) {
       const tex = scene.textures.get(textureKey);
-      const imgH = tex.getSourceImage().height;
-      this.bgImage = scene.add.tileSprite(
-        0, 600, 800 * 3, imgH,
-        textureKey
-      )
-        .setOrigin(0, 1)
-        .setDepth(-10)
-        .setScrollFactor(0)
-        .setAlpha(0.5);
-      this.bgImage.tileScaleX = 1;
-      this.bgImage.tileScaleY = 1;
+      const src = tex.getSourceImage();
+      if (src && src.width > 1 && src.height > 1) {
+        this.bgImage = scene.add.tileSprite(
+          0, 600, 800 * 3, src.height,
+          textureKey
+        )
+          .setOrigin(0, 1)
+          .setDepth(-10)
+          .setScrollFactor(0)
+          .setAlpha(0.5);
+        this.bgImage.tileScaleX = 1;
+        this.bgImage.tileScaleY = 1;
+      } else {
+        this.createFallback(worldWidth, levelNumber);
+      }
     } else {
       this.createFallback(worldWidth, levelNumber);
     }
