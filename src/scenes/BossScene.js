@@ -95,12 +95,16 @@ export default class BossScene extends BaseLevelScene {
     this.physics.add.collider(this.boss, this.arenaPlatforms);
 
     this.physics.add.overlap(this.heroProjectiles, this.boss, (boss, bullet) => {
-      if (!bullet.active || !boss.active) return;
-      const wasAlive = boss.hp > 0;
-      boss.takeDamage(1);
-      bullet.destroy();
-      state.bossHP = boss.hp;
-      if (wasAlive && boss.hp <= 0) this.handleVictory();
+      try {
+        if (!bullet.active || !boss.active) return;
+        const wasAlive = boss.hp > 0;
+        boss.takeDamage(1);
+        bullet.destroy();
+        state.bossHP = boss.hp;
+        if (wasAlive && boss.hp <= 0) this.handleVictory();
+      } catch (e) {
+        console.error('BossProjectile overlap error:', e);
+      }
     });
 
     this.physics.add.collider(this.heroProjectiles, this.floor, (_, bullet) => {
@@ -153,10 +157,14 @@ export default class BossScene extends BaseLevelScene {
       this.physics.add.collider(clone, this.arenaPlatforms);
 
       this.physics.add.overlap(this.heroProjectiles, clone, (boss, bullet) => {
-        if (!bullet.active || !boss.active) return;
-        boss.takeDamage(1);
-        bullet.destroy();
-        this.checkCloneVictory();
+        try {
+          if (!bullet.active || !boss.active) return;
+          boss.takeDamage(1);
+          bullet.destroy();
+          this.checkCloneVictory();
+        } catch (e) {
+          console.error('CloneProjectile overlap error:', e);
+        }
       });
 
       this.physics.add.overlap(this.hero, clone, () => {
@@ -197,7 +205,6 @@ export default class BossScene extends BaseLevelScene {
     state.bossHP = 0;
     state.bossMaxHP = 0;
     saveManager.save();
-    audio.victory();
 
     const victoryText = this.add.text(400, 200, 'ПОБЕДА!', {
       fontSize: '52px', fontFamily: 'Arial', color: '#FFD700',
@@ -211,6 +218,8 @@ export default class BossScene extends BaseLevelScene {
       fontSize: '26px', fontFamily: 'Arial', color: '#FFFFFF',
       backgroundColor: '#333366', padding: { x: 15, y: 8 }
     }).setOrigin(0.5).setDepth(100).setInteractive({ useHandCursor: true });
+
+    try { audio.victory(); } catch (_) {}
 
     btn.on('pointerover', () => btn.setColor('#FFD700'));
     btn.on('pointerout', () => btn.setColor('#FFFFFF'));
