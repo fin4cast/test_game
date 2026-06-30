@@ -259,12 +259,18 @@ export default class BossScene extends BaseLevelScene {
     this.handleEscInput();
 
     if (this.battleStarted) {
-      if (this.boss.active) {
+      if (this.boss && this.boss.active) {
         this.boss.update(time, delta, this.hero);
       }
       this.bossClones.forEach(clone => {
         if (clone.active) clone.update(time, delta, this.hero);
       });
+
+      const bossDead = !this.boss || !this.boss.active;
+      const clonesDead = this.bossClones.length === 0 || this.bossClones.every(c => !c.active);
+      if (bossDead && clonesDead && this.bossClones.length > 0) {
+        this.handleVictory();
+      }
     }
   }
 }
