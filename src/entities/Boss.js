@@ -326,7 +326,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy() {
-    createBossDeathEffect(this.scene, this.x, this.y);
+    if (this.scene && this.scene.add) {
+      createBossDeathEffect(this.scene, this.x, this.y);
+    }
     super.destroy();
   }
 }

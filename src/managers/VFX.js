@@ -31,6 +31,7 @@ export function createDeathEffect(scene, x, y, count = 6, color = 0xFF6666) {
 }
 
 export function createBossDeathEffect(scene, x, y) {
+  if (!scene || !scene.add) return;
   const colors = [0xFF4444, 0xFFD700, 0xFFFFFF, 0xFF8800, 0xFFFF00];
   for (let i = 0; i < 20; i++) {
     const color = colors[Phaser.Math.Between(0, colors.length - 1)];
