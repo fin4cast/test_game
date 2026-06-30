@@ -20,11 +20,11 @@
 - [x] Летающие враги
 - [x] Шипы
 
-## Уровень 4 — Китайский храм
-- [ ] **level4.json** — красно-золотая палитра (bgColor 0x2A0A0A), прыжки по колоннам, летающие фонарики, шипы, летающие враги
-- [ ] **Boss type 4: Ниндзя «Красная кнопка»**
+## ✅ Уровень 4 — Китайский храм
+- [x] **level4.json** — красно-золотая палитра (bgColor 0x2A0A0A), прыжки по колоннам, шипы, летающие враги
+- [x] **Boss type 4: Ниндзя «Красная кнопка»**
   - Фаза 1: сюрикены веером (shootSpread), телепортация по арене
-  - Фаза 2: распадается на 2 клона (50% размера, 50% HP), оба должны быть убиты
+  - Фаза 2: распадается на 2 клона (50% размера, 50% HP), каждый в своей половине арены
 
 ## Уровень 5 — Механическая фабрика
 - [ ] **level5.json** — серо-стальная палитра (bgColor 0x1A1A2A)
@@ -54,10 +54,12 @@
 - [x] `GameScene.js` — spike-группа, meteor-таймеры
 - [x] `LevelManager.js` — расширить LEVELS до 6, имена уровней и боссов
 - [x] `ParallaxBackground.js` — цвета для уровней 4-6
+- [x] `BossScene.js` — поддержка босса 4 (spawnBossClones, checkCloneVictory), overlap try-catch защита
+- [x] `Boss.js` — `updateBoss4` (сюрикены, телепорт, клоны)
+- [ ] `Boss.js` — `updateBoss5`, `updateBoss6`
+- [ ] `BossScene.js` — поддержка боссов 5, 6
 - [ ] `PlatformFactory.js` — поддержка `conveyor` и `breakable` типов
-- [ ] `BossScene.js` — поддержка боссов 4-6, логика клонов для босса 4
-- [ ] `Boss.js` — `updateBoss4`, `updateBoss5`, `updateBoss6`
-- [ ] `GameScene.js` — saw-группа, conveyor-логика
+- [ ] `GameScene.js` — saw-группа, conveyor-логика, lasers, breakable
 
 ## Главное меню — новые функции
 
@@ -85,6 +87,17 @@
 ## Баги (исправлено)
 - [x] Потеря абилок после смерти — `GameState.resetRun()` сохраняет abilityCount
 - [x] Координаты шипов — пересчитаны, шипы только на наземных платформах
+- [x] Оператор precedence в скорости босса — `(hero.x > this.x ? 1 : -1) * this.speed`
+- [x] `Boss.takeDamage()` не деактивировал босса при `hp <= 0` — добавлен `setActive(false)`
+- [x] Дублирование `handleDefeat` в overlap-колбэках BossScene — удалено
+- [x] `Boss.destroy()` кидал ошибку при shutdown сцены — добавлена проверка `this.scene?.add`
+- [x] `createBossDeathEffect` падал при shutdown — добавлена проверка `scene?.add`
+- [x] ESC-кнопка возврата в меню — `handleEscInput` в GameScene и BossScene
+- [x] `handleVictory` без guard — добавлен `_victoryHandled`, сброс `state.inBoss`, остановка HUDScene
+- [x] Переход между сценами — 50ms задержка + try-catch в кнопке победы
+- [x] Фон не рендерился для отсутствующих текстур — `ParallaxBackground` проверяет `src.width > 1`
+- [x] `audio.*()` методы кидали `InvalidStateError` при закрытом AudioContext → ломали `handleVictory`/overlap — все `_playTone`/`_playNoise`/`_playSweep` обёрнуты в try-catch
+- [x] BossScene overlap-колбэки (герой→босс, герой→клон) не защищены от исключений — обёрнуты в try-catch
 
 ## Шкала сложности
 ```

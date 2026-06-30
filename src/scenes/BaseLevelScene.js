@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Hero from '../entities/Hero.js';
 import state from '../managers/GameState.js';
+import saveManager from '../managers/SaveManager.js';
 import InputManager from '../managers/InputManager.js';
 import audio from '../managers/AudioManager.js';
 
@@ -68,6 +69,8 @@ export default class BaseLevelScene extends Phaser.Scene {
 
   handleEscInput() {
     if (this.keys.escJustDown) {
+      state.hp = this.hero.hp;
+      saveManager.save();
       this.scene.stop('HUDScene');
       this.scene.start('MenuScene');
     }

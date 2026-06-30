@@ -118,6 +118,8 @@ export default class GameScene extends BaseLevelScene {
   }
 
   setupMeteors() {
+    this.meteorGroup = null;
+    this.meteorTimers = null;
     if (!this.levelData.meteors) return;
     this.meteorGroup = this.physics.add.group({ allowGravity: false });
     this.meteorTimers = [];
