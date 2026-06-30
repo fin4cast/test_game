@@ -1,0 +1,44 @@
+{
+  "name": "Звёздные джунгли",
+  "bgColor": 4757789,
+  "worldWidth": 6000,
+  "playerStart": { "x": 80, "y": 500 },
+  "bossTrigger": { "x": 5700, "y": 500 },
+  "platforms": [
+    { "x": 400, "y": 584, "width": 800, "height": 32 },
+    { "x": 1300, "y": 584, "width": 600, "height": 32 },
+    { "x": 1800, "y": 534, "width": 200, "height": 32 },
+    { "x": 2100, "y": 484, "width": 200, "height": 32 },
+    { "x": 2400, "y": 384, "width": 200, "height": 32 },
+    { "x": 2800, "y": 584, "width": 400, "height": 32 },
+    { "x": 3300, "y": 484, "width": 250, "height": 32 },
+    { "x": 3700, "y": 384, "width": 250, "height": 32 },
+    { "x": 4100, "y": 284, "width": 200, "height": 32 },
+    { "x": 4400, "y": 384, "width": 200, "height": 32 },
+    { "x": 4700, "y": 484, "width": 200, "height": 32 },
+    { "x": 5000, "y": 584, "width": 1400, "height": 32 }
+  ],
+  "enemies": [
+    { "x": 400, "y": 500, "patrolRange": 80 },
+    { "x": 2400, "y": 300, "patrolRange": 40 },
+    { "x": 3700, "y": 300, "patrolRange": 50 }
+  ],
+  "collectibles": [
+    { "x": 500, "y": 500, "type": "coin" },
+    { "x": 700, "y": 500, "type": "coin" },
+    { "x": 1500, "y": 500, "type": "coin" },
+    { "x": 1800, "y": 470, "type": "coin" },
+    { "x": 2100, "y": 420, "type": "heart" },
+    { "x": 2400, "y": 320, "type": "coin" },
+    { "x": 2600, "y": 320, "type": "coin" },
+    { "x": 2900, "y": 500, "type": "coin" },
+    { "x": 3300, "y": 420, "type": "coin" },
+    { "x": 3600, "y": 320, "type": "heart" },
+    { "x": 3700, "y": 320, "type": "coin" },
+    { "x": 4100, "y": 220, "type": "coin" },
+    { "x": 4400, "y": 320, "type": "coin" },
+    { "x": 4700, "y": 420, "type": "heart" },
+    { "x": 5200, "y": 500, "type": "coin" },
+    { "x": 5400, "y": 500, "type": "coin" }
+  ]
+}

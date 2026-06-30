@@ -1,0 +1,43 @@
+{
+  "name": "Космическая станция",
+  "bgColor": 655402,
+  "worldWidth": 6000,
+  "playerStart": { "x": 80, "y": 500 },
+  "bossTrigger": { "x": 5700, "y": 500 },
+  "platforms": [
+    { "x": 300, "y": 584, "width": 600, "height": 32, "texture": "platform_metal" },
+    { "x": 1200, "y": 584, "width": 500, "height": 32, "texture": "platform_metal" },
+    { "x": 1850, "y": 484, "width": 250, "height": 32, "texture": "platform_metal" },
+    { "x": 2300, "y": 384, "width": 200, "height": 32, "texture": "platform_metal" },
+    { "x": 2700, "y": 584, "width": 400, "height": 32, "texture": "platform_metal" },
+    { "x": 3300, "y": 484, "width": 250, "height": 32, "texture": "platform_metal", "moveX": 250, "duration": 3000 },
+    { "x": 3900, "y": 434, "width": 200, "height": 32, "texture": "platform_metal" },
+    { "x": 4300, "y": 334, "width": 200, "height": 32, "texture": "platform_metal" },
+    { "x": 4700, "y": 284, "width": 200, "height": 32, "texture": "platform_metal", "moveY": -150, "duration": 2500 },
+    { "x": 5100, "y": 334, "width": 200, "height": 32, "texture": "platform_metal" },
+    { "x": 5500, "y": 584, "width": 1200, "height": 32, "texture": "platform_metal" }
+  ],
+  "enemies": [
+    { "x": 400, "y": 500, "patrolRange": 80 },
+    { "x": 1200, "y": 500, "patrolRange": 80 },
+    { "x": 2500, "y": 500, "patrolRange": 80 },
+    { "x": 3900, "y": 350, "patrolRange": 40 },
+    { "x": 5300, "y": 500, "patrolRange": 70 }
+  ],
+  "collectibles": [
+    { "x": 200, "y": 500, "type": "coin" },
+    { "x": 400, "y": 500, "type": "coin" },
+    { "x": 1200, "y": 500, "type": "coin" },
+    { "x": 1850, "y": 420, "type": "coin" },
+    { "x": 2300, "y": 320, "type": "heart" },
+    { "x": 2700, "y": 500, "type": "coin" },
+    { "x": 2900, "y": 500, "type": "coin" },
+    { "x": 3600, "y": 420, "type": "coin" },
+    { "x": 3900, "y": 370, "type": "coin" },
+    { "x": 4300, "y": 270, "type": "heart" },
+    { "x": 4900, "y": 220, "type": "coin" },
+    { "x": 5100, "y": 270, "type": "coin" },
+    { "x": 5300, "y": 500, "type": "coin" },
+    { "x": 5500, "y": 500, "type": "heart" }
+  ]
+}

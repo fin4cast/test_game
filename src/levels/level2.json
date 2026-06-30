@@ -1,0 +1,43 @@
+{
+  "name": "Ледяная пещера",
+  "bgColor": 657946,
+  "worldWidth": 6000,
+  "playerStart": { "x": 80, "y": 500 },
+  "bossTrigger": { "x": 5700, "y": 500 },
+  "platforms": [
+    { "x": 300, "y": 584, "width": 600, "height": 32, "texture": "platform_ice" },
+    { "x": 1100, "y": 584, "width": 500, "height": 32, "texture": "platform_ice" },
+    { "x": 1600, "y": 534, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 1900, "y": 434, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 2300, "y": 584, "width": 600, "height": 32, "texture": "platform_ice" },
+    { "x": 3050, "y": 484, "width": 250, "height": 32, "texture": "platform_ice" },
+    { "x": 3450, "y": 384, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 3850, "y": 284, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 4150, "y": 384, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 4450, "y": 484, "width": 200, "height": 32, "texture": "platform_ice" },
+    { "x": 4800, "y": 584, "width": 1600, "height": 32, "texture": "platform_ice" }
+  ],
+  "enemies": [
+    { "x": 1000, "y": 500, "patrolRange": 80 },
+    { "x": 2300, "y": 500, "patrolRange": 100 },
+    { "x": 3050, "y": 400, "patrolRange": 50 },
+    { "x": 3450, "y": 300, "patrolRange": 40 },
+    { "x": 5200, "y": 500, "patrolRange": 100 }
+  ],
+  "collectibles": [
+    { "x": 200, "y": 500, "type": "coin" },
+    { "x": 400, "y": 500, "type": "coin" },
+    { "x": 1000, "y": 500, "type": "coin" },
+    { "x": 1600, "y": 470, "type": "coin" },
+    { "x": 1900, "y": 370, "type": "heart" },
+    { "x": 2200, "y": 500, "type": "coin" },
+    { "x": 2500, "y": 500, "type": "coin" },
+    { "x": 3050, "y": 420, "type": "coin" },
+    { "x": 3450, "y": 320, "type": "coin" },
+    { "x": 3850, "y": 220, "type": "heart" },
+    { "x": 4150, "y": 320, "type": "coin" },
+    { "x": 4450, "y": 420, "type": "coin" },
+    { "x": 5000, "y": 500, "type": "coin" },
+    { "x": 5200, "y": 500, "type": "heart" }
+  ]
+}
