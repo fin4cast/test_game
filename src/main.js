@@ -5,6 +5,7 @@ import GameScene from './scenes/GameScene.js';
 import BossScene from './scenes/BossScene.js';
 import HUDScene from './scenes/HUDScene.js';
 import GameOverScene from './scenes/GameOverScene.js';
+import LevelSelectScene from './scenes/LevelSelectScene.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -18,7 +19,7 @@ const config = {
       debug: false
     }
   },
-  scene: [BootScene, MenuScene, GameScene, BossScene, HUDScene, GameOverScene],
+  scene: [BootScene, MenuScene, GameScene, BossScene, HUDScene, GameOverScene, LevelSelectScene],
   pixelArt: true,
   backgroundColor: '#000000',
   scale: {

@@ -17,6 +17,8 @@ class GameState {
     this._bossHP = 0;
     this._bossMaxHP = 0;
     this._inBoss = false;
+    this._unlockedLevels = 1;
+    this._skin = 'hero';
   }
 
   resetRun() {
@@ -70,6 +72,12 @@ class GameState {
 
   get inBoss() { return this._inBoss; }
   set inBoss(v) { this._inBoss = v; this.emitter.emit('changedata', 'inBoss', v); }
+
+  get unlockedLevels() { return this._unlockedLevels; }
+  set unlockedLevels(v) { this._unlockedLevels = v; this.emitter.emit('changedata', 'unlockedLevels', v); }
+
+  get skin() { return this._skin; }
+  set skin(v) { this._skin = v; this.emitter.emit('changedata', 'skin', v); }
 
   on(event, fn, ctx) {
     this.emitter.on(event, fn, ctx);

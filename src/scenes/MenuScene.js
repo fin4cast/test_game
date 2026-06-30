@@ -29,7 +29,7 @@ export default class MenuScene extends Phaser.Scene {
       color: '#AAAAAA'
     }).setOrigin(0.5);
 
-    const startBtn = this.add.text(width / 2, height / 2 + 40, '[ НАЧАТЬ ИГРУ ]', {
+    const startBtn = this.add.text(width / 2, height / 2 + 10, '[ НАЧАТЬ ИГРУ ]', {
       fontSize: '32px',
       fontFamily: 'Arial',
       color: '#FFFFFF',
@@ -38,9 +38,10 @@ export default class MenuScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     let continueBtn = null;
+    let selectBtn = null;
 
     if (saveManager.hasSave()) {
-      continueBtn = this.add.text(width / 2, height / 2 + 90, '[ ПРОДОЛЖИТЬ ]', {
+      continueBtn = this.add.text(width / 2, height / 2 + 65, '[ ПРОДОЛЖИТЬ ]', {
         fontSize: '22px',
         fontFamily: 'Arial',
         color: '#88FF88',
@@ -57,6 +58,14 @@ export default class MenuScene extends Phaser.Scene {
       });
     }
 
+    selectBtn = this.add.text(width / 2, height / 2 + (continueBtn ? 120 : 70), '[ ВЫБОР УРОВНЯ ]', {
+      fontSize: '22px',
+      fontFamily: 'Arial',
+      color: '#88AAFF',
+      backgroundColor: '#334466',
+      padding: { x: 18, y: 8 }
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
     startBtn.on('pointerover', () => { startBtn.setColor('#FFD700'); audio.buttonHover(); });
     startBtn.on('pointerout', () => startBtn.setColor('#FFFFFF'));
     startBtn.on('pointerdown', () => {
@@ -65,6 +74,13 @@ export default class MenuScene extends Phaser.Scene {
       state.reset();
       state.currentLevel = 1;
       this.scene.start('GameScene', { level: 1 });
+    });
+
+    selectBtn.on('pointerover', () => { selectBtn.setColor('#FFFFFF'); audio.buttonHover(); });
+    selectBtn.on('pointerout', () => selectBtn.setColor('#88AAFF'));
+    selectBtn.on('pointerdown', () => {
+      audio.buttonClick();
+      this.scene.start('LevelSelectScene');
     });
 
     this.add.text(width / 2, height - 100,
@@ -76,7 +92,7 @@ export default class MenuScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.add.text(width / 2, height - 50,
-      'Соберите монеты, пройдите 3 уровня и победите боссов!', {
+      'Соберите монеты, пройдите 6 уровней и победите всех боссов!', {
       fontSize: '14px',
       fontFamily: 'Arial',
       color: '#444444'

@@ -136,6 +136,7 @@ export default class BossScene extends BaseLevelScene {
 
     state.hp = Math.min(this.hero.hp + 1, this.hero.maxHp);
     state.abilityCount = state.abilityCount + 1;
+    state.unlockedLevels = Math.max(state.unlockedLevels, this.levelNumber + 1);
     saveManager.save();
     audio.victory();
 

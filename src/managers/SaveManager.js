@@ -10,6 +10,8 @@ class SaveManager {
       coins: state.coins,
       abilityCount: state.abilityCount,
       currentLevel: state.currentLevel,
+      unlockedLevels: state.unlockedLevels,
+      skin: state.skin,
       timestamp: Date.now()
     };
     try {
@@ -29,6 +31,8 @@ class SaveManager {
       state.coins = data.coins ?? 0;
       state.abilityCount = data.abilityCount ?? 0;
       state.currentLevel = data.currentLevel ?? 1;
+      state.unlockedLevels = data.unlockedLevels ?? 1;
+      state.skin = data.skin ?? 'hero';
       return true;
     } catch (e) {
       return false;
