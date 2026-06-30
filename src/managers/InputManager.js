@@ -11,6 +11,7 @@ export default class InputManager {
     this.keySpace = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     this.keyE = scene.input.keyboard.addKey('E');
+    this.keyEsc = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     this.wasd = {
       up: this.keyW, down: this.keyS, left: this.keyA, right: this.keyD,
@@ -27,6 +28,7 @@ export default class InputManager {
   }
   get dashJustDown() { return Phaser.Input.Keyboard.JustDown(this.wasd.shift); }
   get eJustDown() { return Phaser.Input.Keyboard.JustDown(this.keyE); }
+  get escJustDown() { return Phaser.Input.Keyboard.JustDown(this.keyEsc); }
 
   onPointerDown(fn) {
     this.scene.input.on('pointerdown', (pointer) => {

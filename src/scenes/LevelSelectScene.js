@@ -73,6 +73,8 @@ export default class LevelSelectScene extends Phaser.Scene {
           .on('pointerdown', () => {
             audio.buttonClick();
             state.currentLevel = i;
+            state.abilityCount = Math.max(state.abilityCount, Math.min(i - 1, 2));
+            state.hp = Math.max(state.hp, 3);
             this.scene.start('GameScene', { level: i });
           });
       } else {

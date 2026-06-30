@@ -252,6 +252,7 @@ export default class GameScene extends BaseLevelScene {
     this.parallax.update();
     this.hero.update(time, delta);
     this.handleEInput();
+    this.handleEscInput();
 
     this.enemyGroup.getChildren().forEach(enemy => {
       if (enemy.active) enemy.update(time, delta);

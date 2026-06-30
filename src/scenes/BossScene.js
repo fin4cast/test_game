@@ -96,10 +96,11 @@ export default class BossScene extends BaseLevelScene {
 
     this.physics.add.overlap(this.heroProjectiles, this.boss, (boss, bullet) => {
       if (!bullet.active || !boss.active) return;
+      const wasAlive = boss.hp > 0;
       boss.takeDamage(1);
       bullet.destroy();
       state.bossHP = boss.hp;
-      if (boss.hp <= 0) this.handleVictory();
+      if (wasAlive && boss.hp <= 0) this.handleVictory();
     });
 
     this.physics.add.collider(this.heroProjectiles, this.floor, (_, bullet) => {
@@ -112,7 +113,6 @@ export default class BossScene extends BaseLevelScene {
       hero.takeDamage(1);
       state.hp = hero.hp;
       this.cameras.main.shake(100, 0.008);
-      if (hero.hp <= 0) this.handleDefeat();
     });
 
     this.physics.add.collider(this.bossProjectiles, this.floor, (_, proj) => {
@@ -124,7 +124,6 @@ export default class BossScene extends BaseLevelScene {
         this.hero.takeDamage(1);
         state.hp = this.hero.hp;
         this.cameras.main.shake(150, 0.005);
-        if (this.hero.hp <= 0) this.handleDefeat();
       }
     });
   }
@@ -136,6 +135,13 @@ export default class BossScene extends BaseLevelScene {
     const offsets = [-100, 100];
     offsets.forEach((offset, i) => {
       const clone = new Boss(this, x + offset, y - 50, 4, true);
+      if (i === 0) {
+        clone.halfMinX = 50;
+        clone.halfMaxX = 380;
+      } else {
+        clone.halfMinX = 420;
+        clone.halfMaxX = 750;
+      }
       clone.setScale(0.9);
       clone.maxHp = 4;
       clone.hp = 4;
@@ -158,7 +164,6 @@ export default class BossScene extends BaseLevelScene {
           this.hero.takeDamage(1);
           state.hp = this.hero.hp;
           this.cameras.main.shake(150, 0.005);
-          if (this.hero.hp <= 0) this.handleDefeat();
         }
       });
     });
@@ -177,7 +182,7 @@ export default class BossScene extends BaseLevelScene {
   }
 
   handleVictory() {
-    this.boss.destroy();
+    if (this.boss && this.boss.active) this.boss.destroy();
     this.hero.setActive(false);
     this.hero.setVelocity(0, 0);
     this.hero.setVisible(false);
@@ -230,6 +235,7 @@ export default class BossScene extends BaseLevelScene {
 
     this.hero.update(time, delta);
     this.handleEInput();
+    this.handleEscInput();
 
     if (this.battleStarted) {
       if (this.boss.active) {

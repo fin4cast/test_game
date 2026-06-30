@@ -66,6 +66,13 @@ export default class BaseLevelScene extends Phaser.Scene {
     }
   }
 
+  handleEscInput() {
+    if (this.keys.escJustDown) {
+      this.scene.stop('HUDScene');
+      this.scene.start('MenuScene');
+    }
+  }
+
   checkHeroFall() {
     if (this.hero.y > 620) {
       this.handleHeroDeath();

@@ -20,6 +20,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.attackInterval = 2500;
     this.attackPattern = 0;
     this.teleportTimer = 0;
+    this.halfMinX = 0;
+    this.halfMaxX = 800;
     this.setCollideWorldBounds(true);
     this.body.setAllowGravity(true);
     this.body.setSize(50, 50);
@@ -195,13 +197,32 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    const dist = Phaser.Math.Distance.Between(this.x, this.y, hero.x, hero.y);
-
-    if (dist > 200) {
-      const dir = hero.x > this.x ? 1 : -1;
-      this.setVelocityX(dir * this.speed);
+    if (this.isClone) {
+      if (this.x < this.halfMinX) {
+        this.setVelocityX(this.speed);
+      } else if (this.x > this.halfMaxX) {
+        this.setVelocityX(-this.speed);
+      } else {
+        const inMyHalf = hero.x >= this.halfMinX && hero.x <= this.halfMaxX;
+        if (inMyHalf) {
+          const dist = Phaser.Math.Distance.Between(this.x, this.y, hero.x, hero.y);
+          if (dist > 200) {
+            this.setVelocityX((hero.x > this.x ? 1 : -1) * this.speed);
+          } else {
+            this.setVelocityX(0);
+          }
+        } else {
+          const center = (this.halfMinX + this.halfMaxX) / 2;
+          this.setVelocityX((center > this.x ? 1 : -1) * this.speed * 0.5);
+        }
+      }
     } else {
-      this.setVelocityX(0);
+      const dist = Phaser.Math.Distance.Between(this.x, this.y, hero.x, hero.y);
+      if (dist > 200) {
+        this.setVelocityX((hero.x > this.x ? 1 : -1) * this.speed);
+      } else {
+        this.setVelocityX(0);
+      }
     }
 
     if (this.body.blocked.down) {
@@ -297,6 +318,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(80, () => {
       if (this.active) this.clearTint();
     });
+
+    if (this.hp <= 0) {
+      this.setActive(false);
+      this.setVisible(false);
+    }
   }
 
   destroy() {
