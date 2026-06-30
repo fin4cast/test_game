@@ -5,12 +5,18 @@ export default class BootScene extends Phaser.Scene {
     super('BootScene');
   }
 
+  preload() {
+    for (let i = 1; i <= 6; i++) {
+      this.load.image('bg' + i, 'backgrounds/l' + i + '.jpeg');
+    }
+    this.load.image('platform_ground', 'textures/platform_ground.png');
+    this.load.image('platform_ice', 'textures/platform_ice.png');
+    this.load.image('platform_metal', 'textures/platform_metal.png');
+  }
+
   create() {
     this.generateHeroTexture();
     this.generateStarTexture();
-    this.generatePlatformTexture('platform_ground', 0x8B4513, 0x654321);
-    this.generatePlatformTexture('platform_ice', 0x87CEEB, 0x6CA6CD);
-    this.generatePlatformTexture('platform_metal', 0x808080, 0x606060);
     this.generateEnemyTexture();
     this.generateBoss1Texture();
     this.generateBoss2Texture();
