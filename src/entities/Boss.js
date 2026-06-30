@@ -3,16 +3,17 @@ import { createBossDeathEffect } from '../managers/VFX.js';
 import audio from '../managers/AudioManager.js';
 
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, bossType) {
-    const textures = [null, 'boss1', 'boss2', 'boss3'];
-    super(scene, x, y, textures[bossType]);
+  constructor(scene, x, y, bossType, isClone = false) {
+    const textures = [null, 'boss1', 'boss2', 'boss3', 'boss4'];
+    super(scene, x, y, textures[bossType] || 'boss1');
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.bossType = bossType;
-    this.maxHp = bossType === 1 ? 5 : bossType === 2 ? 8 : 12;
+    this.isClone = isClone;
+    this.maxHp = bossType === 1 ? 5 : bossType === 2 ? 8 : bossType === 3 ? 12 : isClone ? 4 : 8;
     this.hp = this.maxHp;
-    this.speed = bossType === 1 ? 80 : bossType === 2 ? 110 : 130;
+    this.speed = bossType === 1 ? 80 : bossType === 2 ? 110 : bossType === 3 ? 130 : 120;
     this.isVulnerable = true;
     this.phase = 1;
     this.attackTimer = 2000;
@@ -24,8 +25,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.body.setSize(50, 50);
     this.setDepth(8);
 
-    const scales = [null, 1.5, 1.3, 1.8];
-    this.setScale(scales[bossType]);
+    const scales = [null, 1.5, 1.3, 1.8, 1.5];
+    this.setScale(isClone ? scales[bossType] * 0.6 : scales[bossType] || 1.5);
+
+    this.projectileTexture = bossType === 4 ? 'shuriken' : 'star';
+    this.projectileTint = bossType === 4 ? 0xCC2222 : 0xFF4444;
 
     if (bossType === 1) {
       this.isVulnerable = false;
@@ -39,6 +43,10 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       this.isVulnerable = true;
       this.attackInterval = 2200;
     }
+    if (bossType === 4) {
+      this.isVulnerable = true;
+      this.attackInterval = 1800;
+    }
   }
 
   update(time, delta, hero) {
@@ -50,6 +58,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       case 1: this.updateBoss1(delta, hero); break;
       case 2: this.updateBoss2(delta, hero); break;
       case 3: this.updateBoss3(time, delta, hero); break;
+      case 4: this.updateBoss4(time, delta, hero); break;
     }
   }
 
@@ -173,6 +182,48 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  updateBoss4(time, delta, hero) {
+    this.setFlipX(hero.x < this.x);
+
+    if (this.hp <= this.maxHp * 0.5 && this.phase === 1 && !this.isClone) {
+      this.phase = 2;
+      this.setActive(false);
+      this.setVisible(false);
+      if (this.scene.spawnBossClones) {
+        this.scene.spawnBossClones(this.x, this.y);
+      }
+      return;
+    }
+
+    const dist = Phaser.Math.Distance.Between(this.x, this.y, hero.x, hero.y);
+
+    if (dist > 200) {
+      const dir = hero.x > this.x ? 1 : -1;
+      this.setVelocityX(dir * this.speed);
+    } else {
+      this.setVelocityX(0);
+    }
+
+    if (this.body.blocked.down) {
+      this.setVelocityY(-350);
+    }
+
+    if (this.attackTimer <= 0) {
+      if (this.isClone) {
+        this.shootSpread(hero, 3);
+        this.attackTimer = this.attackInterval + 500;
+      } else {
+        this.shootSpread(hero, 5);
+        this.attackTimer = this.attackInterval;
+        if (this.teleportTimer >= 3000) {
+          this.teleport();
+          this.teleportTimer = 0;
+        }
+        this.teleportTimer += delta;
+      }
+    }
+  }
+
   shootSpread(hero, count) {
     const baseAngle = Phaser.Math.Angle.Between(this.x, this.y, hero.x, hero.y);
     const spreadAngle = 0.8;
@@ -202,9 +253,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   createProjectile(angle, speed) {
-    const proj = this.scene.add.sprite(this.x, this.y, 'star');
-    proj.setScale(0.35);
-    proj.setTint(0xFF4444);
+    const proj = this.scene.add.sprite(this.x, this.y, this.projectileTexture || 'star');
+    proj.setScale(this.bossType === 4 ? 0.5 : 0.35);
+    proj.setTint(this.projectileTint || 0xFF4444);
     proj.setDepth(5);
     if (this.scene.bossProjectiles) {
       this.scene.bossProjectiles.add(proj);

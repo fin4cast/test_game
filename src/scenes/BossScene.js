@@ -36,6 +36,7 @@ export default class BossScene extends BaseLevelScene {
     this.createHero(120, 400);
     this.hero.setCollideWorldBounds(true);
 
+    this.bossClones = [];
     this.boss = new Boss(this, 600, 200, this.levelNumber);
 
     state.bossHP = this.boss.hp;
@@ -128,6 +129,53 @@ export default class BossScene extends BaseLevelScene {
     });
   }
 
+  spawnBossClones(x, y) {
+    this.boss.destroy();
+    this.bossClones = [];
+
+    const offsets = [-100, 100];
+    offsets.forEach((offset, i) => {
+      const clone = new Boss(this, x + offset, y - 50, 4, true);
+      clone.setScale(0.9);
+      clone.maxHp = 4;
+      clone.hp = 4;
+      clone.speed = 140;
+      clone.attackInterval = 2300;
+      this.bossClones.push(clone);
+
+      this.physics.add.collider(clone, this.floor);
+      this.physics.add.collider(clone, this.arenaPlatforms);
+
+      this.physics.add.overlap(this.heroProjectiles, clone, (boss, bullet) => {
+        if (!bullet.active || !boss.active) return;
+        boss.takeDamage(1);
+        bullet.destroy();
+        this.checkCloneVictory();
+      });
+
+      this.physics.add.overlap(this.hero, clone, () => {
+        if (this.hero.active && clone.active && !this.hero.invulnerable) {
+          this.hero.takeDamage(1);
+          state.hp = this.hero.hp;
+          this.cameras.main.shake(150, 0.005);
+          if (this.hero.hp <= 0) this.handleDefeat();
+        }
+      });
+    });
+
+    state.bossHP = 4;
+    state.bossMaxHP = 4;
+  }
+
+  checkCloneVictory() {
+    const alive = this.bossClones.filter(c => c.active);
+    if (alive.length === 0) {
+      this.handleVictory();
+    } else {
+      state.bossHP = alive.reduce((sum, c) => sum + c.hp, 0) / alive.length;
+    }
+  }
+
   handleVictory() {
     this.boss.destroy();
     this.hero.setActive(false);
@@ -183,8 +231,13 @@ export default class BossScene extends BaseLevelScene {
     this.hero.update(time, delta);
     this.handleEInput();
 
-    if (this.battleStarted && this.boss.active) {
-      this.boss.update(time, delta, this.hero);
+    if (this.battleStarted) {
+      if (this.boss.active) {
+        this.boss.update(time, delta, this.hero);
+      }
+      this.bossClones.forEach(clone => {
+        if (clone.active) clone.update(time, delta, this.hero);
+      });
     }
   }
 }

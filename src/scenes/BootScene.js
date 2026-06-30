@@ -23,6 +23,7 @@ export default class BootScene extends Phaser.Scene {
     this.generateMeteorTexture();
     this.generateFlyingEnemyTexture();
     this.generateSawTexture();
+    this.generateBoss4Texture();
 
     this.scene.start('MenuScene');
   }
@@ -279,6 +280,31 @@ export default class BootScene extends Phaser.Scene {
     g.fillStyle(0x444444);
     g.fillCircle(16, 16, 4);
     g.generateTexture('saw', 32, 32);
+    g.destroy();
+  }
+
+  generateBoss4Texture() {
+    const g = this.add.graphics();
+    g.fillStyle(0xCC0000);
+    g.fillCircle(32, 32, 28);
+    g.fillStyle(0x880000);
+    g.fillRect(14, 8, 36, 48);
+    g.fillStyle(0xFF2222);
+    g.fillRect(18, 12, 28, 8);
+    g.fillStyle(0xFFFFFF);
+    g.fillCircle(22, 28, 5);
+    g.fillCircle(42, 28, 5);
+    g.fillStyle(0x000000);
+    g.fillCircle(22, 28, 2);
+    g.fillCircle(42, 28, 2);
+    g.lineStyle(2, 0xFF0000);
+    g.beginPath();
+    g.arc(32, 40, 8, 0.3, Math.PI - 0.3, false);
+    g.strokePath();
+    g.fillStyle(0xFF0000);
+    g.fillRect(8, 18, 6, 4);
+    g.fillRect(50, 18, 6, 4);
+    g.generateTexture('boss4', 64, 64);
     g.destroy();
   }
 
