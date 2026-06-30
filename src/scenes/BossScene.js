@@ -1,67 +1,56 @@
 import Phaser from 'phaser';
-import Hero from '../entities/Hero.js';
+import BaseLevelScene from './BaseLevelScene.js';
 import Boss from '../entities/Boss.js';
+import state from '../managers/GameState.js';
+import LevelManager from '../managers/LevelManager.js';
+import audio from '../managers/AudioManager.js';
+import saveManager from '../managers/SaveManager.js';
 
-export default class BossScene extends Phaser.Scene {
+export default class BossScene extends BaseLevelScene {
   constructor() {
     super('BossScene');
   }
 
   init(data) {
     this.levelNumber = data.level || 1;
-    this.registry.set('inBoss', true);
+    state.inBoss = true;
   }
 
   create() {
+    this.cameras.main.fadeIn(500);
     this.physics.world.setBounds(0, -200, 800, 1000);
     this.cameras.main.setBackgroundColor('#0a0011');
+
+    this.scene.launch('HUDScene');
+
+    for (let i = 0; i < 60; i++) {
+      const x = Phaser.Math.Between(0, 800);
+      const y = Phaser.Math.Between(0, 600);
+      const r = Phaser.Math.Between(1, 2);
+      this.add.circle(x, y, r, 0xFFFFFF, 0.03 + Math.random() * 0.06).setDepth(-10);
+    }
 
     this.arenaPlatforms = this.physics.add.staticGroup();
     this.createArena();
 
-    const hp = this.registry.get('hp') || 3;
-    const maxHp = this.registry.get('maxHp') || 5;
-    const abilityCount = this.registry.get('abilityCount') || 0;
-
-    this.hero = new Hero(this, 120, 400);
-    this.hero.hp = hp;
-    this.hero.maxHp = maxHp;
-    if (abilityCount >= 1) this.hero.addAbility('doubleJump');
-    if (abilityCount >= 2) this.hero.addAbility('dash');
+    this.createHero(120, 400);
     this.hero.setCollideWorldBounds(true);
 
     this.boss = new Boss(this, 600, 200, this.levelNumber);
 
-    this.registry.set('bossHP', this.boss.hp);
-    this.registry.set('bossMaxHP', this.boss.maxHp);
+    state.bossHP = this.boss.hp;
+    state.bossMaxHP = this.boss.maxHp;
 
     this.heroProjectiles = this.physics.add.group({ allowGravity: false });
     this.bossProjectiles = this.physics.add.group({ allowGravity: false });
 
     this.setupCollisions();
-
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.keyW = this.input.keyboard.addKey('W');
-    this.keyA = this.input.keyboard.addKey('A');
-    this.keyS = this.input.keyboard.addKey('S');
-    this.keyD = this.input.keyboard.addKey('D');
-    this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-    this.keyE = this.input.keyboard.addKey('E');
-    this.wasd = {
-      up: this.keyW, down: this.keyS, left: this.keyA, right: this.keyD,
-      space: this.keySpace, shift: this.keyShift, e: this.keyE
-    };
-
-    this.input.on('pointerdown', (pointer) => {
-      if (pointer.leftButtonDown()) this.heroShoot();
-    });
+    this.setupInput();
 
     this.cameras.main.setBounds(0, 0, 800, 600);
     this.cameras.main.startFollow(this.hero, true, 0.08, 0.08);
 
-    const bossNames = ['', 'ГИГАНТСКИЙ ЦВЕТОК', 'СНЕЖНЫЙ ГОЛЕМ', 'ТЁМНАЯ ЗВЕЗДА'];
-    const warning = this.add.text(400, 280, `⚠ ${bossNames[this.levelNumber]} ⚠`, {
+    const warning = this.add.text(400, 280, `⚠ ${LevelManager.getBossName(this.levelNumber)} ⚠`, {
       fontSize: '28px', fontFamily: 'Arial', color: '#FF4444',
       stroke: '#000000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(100);
@@ -71,9 +60,7 @@ export default class BossScene extends Phaser.Scene {
       onComplete: () => warning.destroy()
     });
 
-    this.hero.onDeath = () => this.handleDefeat();
     this.battleStarted = false;
-
     this.time.delayedCall(2000, () => { this.battleStarted = true; });
   }
 
@@ -110,7 +97,7 @@ export default class BossScene extends Phaser.Scene {
       if (!bullet.active || !boss.active) return;
       boss.takeDamage(1);
       bullet.destroy();
-      this.registry.set('bossHP', boss.hp);
+      state.bossHP = boss.hp;
       if (boss.hp <= 0) this.handleVictory();
     });
 
@@ -122,7 +109,7 @@ export default class BossScene extends Phaser.Scene {
       if (!proj.active || !hero.active) return;
       proj.destroy();
       hero.takeDamage(1);
-      this.registry.set('hp', hero.hp);
+      state.hp = hero.hp;
       this.cameras.main.shake(100, 0.008);
       if (hero.hp <= 0) this.handleDefeat();
     });
@@ -134,7 +121,7 @@ export default class BossScene extends Phaser.Scene {
     this.physics.add.overlap(this.hero, this.boss, () => {
       if (this.hero.active && this.boss.active && !this.hero.invulnerable) {
         this.hero.takeDamage(1);
-        this.registry.set('hp', this.hero.hp);
+        state.hp = this.hero.hp;
         this.cameras.main.shake(150, 0.005);
         if (this.hero.hp <= 0) this.handleDefeat();
       }
@@ -147,17 +134,18 @@ export default class BossScene extends Phaser.Scene {
     this.hero.setVelocity(0, 0);
     this.hero.setVisible(false);
 
-    this.registry.set('hp', Math.min(this.hero.hp + 1, this.hero.maxHp));
-    const abilityCount = this.registry.get('abilityCount') || 0;
-    this.registry.set('abilityCount', abilityCount + 1);
+    state.hp = Math.min(this.hero.hp + 1, this.hero.maxHp);
+    state.abilityCount = state.abilityCount + 1;
+    saveManager.save();
+    audio.victory();
 
     const victoryText = this.add.text(400, 200, 'ПОБЕДА!', {
       fontSize: '52px', fontFamily: 'Arial', color: '#FFD700',
       stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(100);
 
-    const nextLevel = this.levelNumber + 1;
-    const btnLabel = nextLevel > 3 ? 'Завершить игру' : 'Следующий уровень';
+    const nextLevel = LevelManager.getNextLevel(this.levelNumber);
+    const btnLabel = nextLevel === null ? 'Завершить игру' : 'Следующий уровень';
 
     const btn = this.add.text(400, 320, `[ ${btnLabel} ]`, {
       fontSize: '26px', fontFamily: 'Arial', color: '#FFFFFF',
@@ -168,7 +156,7 @@ export default class BossScene extends Phaser.Scene {
     btn.on('pointerout', () => btn.setColor('#FFFFFF'));
 
     btn.on('pointerdown', () => {
-      if (nextLevel > 3) {
+      if (nextLevel === null) {
         this.scene.stop('HUDScene');
         this.scene.start('GameOverScene', { won: true });
       } else {
@@ -183,43 +171,16 @@ export default class BossScene extends Phaser.Scene {
   handleDefeat() {
     if (this._defeatHandled) return;
     this._defeatHandled = true;
-    this.hero.setActive(false);
-    this.hero.setVisible(false);
-    this.time.delayedCall(800, () => {
-      this.scene.stop('HUDScene');
-      this.scene.start('GameOverScene', { won: false, level: this.levelNumber });
-    });
-  }
-
-  heroShoot() {
-    if (this.hero.attackCooldown > 0 || !this.hero.active) return;
-    this.hero.attackCooldown = 400;
-
-    const dir = this.hero.facingRight ? 1 : -1;
-    const bullet = this.add.sprite(this.hero.x + dir * 22, this.hero.y - 4, 'star');
-    bullet.setScale(0.6);
-    bullet.setDepth(5);
-    this.heroProjectiles.add(bullet);
-    bullet.body.setVelocityX(dir * 500);
-
-    this.time.delayedCall(2000, () => {
-      if (bullet.active) bullet.destroy();
-    });
+    this.handleHeroDeath();
   }
 
   update(time, delta) {
     if (!this.hero || !this.hero.active) return;
 
-    if (this.hero.y > 620) {
-      this.handleDefeat();
-      return;
-    }
+    if (this.checkHeroFall()) return;
 
-    this.hero.update(time, delta, this.cursors, this.wasd);
-
-    if (Phaser.Input.Keyboard.JustDown(this.keyE)) {
-      this.heroShoot();
-    }
+    this.hero.update(time, delta);
+    this.handleEInput();
 
     if (this.battleStarted && this.boss.active) {
       this.boss.update(time, delta, this.hero);

@@ -1,4 +1,7 @@
 import Phaser from 'phaser';
+import state from '../managers/GameState.js';
+import audio from '../managers/AudioManager.js';
+import saveManager from '../managers/SaveManager.js';
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -6,6 +9,9 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    audio.init();
+    this.input.once('pointerdown', () => audio.resume());
+
     const { width, height } = this.cameras.main;
     this.cameras.main.setBackgroundColor('#000011');
 
@@ -31,21 +37,34 @@ export default class MenuScene extends Phaser.Scene {
       padding: { x: 20, y: 10 }
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
-    startBtn.on('pointerover', () => startBtn.setColor('#FFD700'));
+    let continueBtn = null;
+
+    if (saveManager.hasSave()) {
+      continueBtn = this.add.text(width / 2, height / 2 + 90, '[ ПРОДОЛЖИТЬ ]', {
+        fontSize: '22px',
+        fontFamily: 'Arial',
+        color: '#88FF88',
+        backgroundColor: '#336633',
+        padding: { x: 18, y: 8 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+      continueBtn.on('pointerover', () => { continueBtn.setColor('#FFFFFF'); audio.buttonHover(); });
+      continueBtn.on('pointerout', () => continueBtn.setColor('#88FF88'));
+      continueBtn.on('pointerdown', () => {
+        audio.buttonClick();
+        saveManager.load();
+        this.scene.start('GameScene', { level: state.currentLevel });
+      });
+    }
+
+    startBtn.on('pointerover', () => { startBtn.setColor('#FFD700'); audio.buttonHover(); });
     startBtn.on('pointerout', () => startBtn.setColor('#FFFFFF'));
     startBtn.on('pointerdown', () => {
-      this.registry.set('hp', 3);
-      this.registry.set('maxHp', 5);
-      this.registry.set('coins', 0);
-      this.registry.set('hasDoubleJump', false);
-      this.registry.set('hasDash', false);
-      this.registry.set('abilityCount', 1);
-      this.registry.set('currentLevel', 1);
-      this.registry.set('bossHP', 0);
-      this.registry.set('bossMaxHP', 0);
-      this.registry.set('inBoss', false);
+      audio.buttonClick();
+      saveManager.deleteSave();
+      state.reset();
+      state.currentLevel = 1;
       this.scene.start('GameScene', { level: 1 });
-      this.scene.launch('HUDScene');
     });
 
     this.add.text(width / 2, height - 100,

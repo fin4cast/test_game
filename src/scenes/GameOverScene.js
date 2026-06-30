@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import state from '../managers/GameState.js';
+import audio from '../managers/AudioManager.js';
 
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -25,8 +27,7 @@ export default class GameOverScene extends Phaser.Scene {
         fontSize: '20px', fontFamily: 'Arial', color: '#88FF88'
       }).setOrigin(0.5);
 
-      const coins = this.registry.get('coins') || 0;
-      this.add.text(width / 2, height / 3 + 85, `Монет собрано: ${coins}`, {
+      this.add.text(width / 2, height / 3 + 85, `Монет собрано: ${state.coins}`, {
         fontSize: '18px', fontFamily: 'Arial', color: '#FFD700'
       }).setOrigin(0.5);
     } else {
@@ -47,15 +48,14 @@ export default class GameOverScene extends Phaser.Scene {
       backgroundColor: '#333366', padding: { x: 15, y: 8 }
     }).setOrigin(0.5).setDepth(100).setInteractive({ useHandCursor: true });
 
-    retryBtn.on('pointerover', () => retryBtn.setColor('#FFD700'));
+    retryBtn.on('pointerover', () => { retryBtn.setColor('#FFD700'); audio.buttonHover(); });
     retryBtn.on('pointerout', () => retryBtn.setColor('#FFFFFF'));
     retryBtn.on('pointerdown', () => {
+      audio.buttonClick();
+      state.reset();
       const lvl = this.won ? 1 : this.level;
-      this.registry.set('hp', 3);
-      this.registry.set('coins', 0);
-      this.registry.set('abilityCount', 0);
+      state.currentLevel = lvl;
       this.scene.start('GameScene', { level: lvl });
-      this.scene.launch('HUDScene');
     });
 
     const menuBtn = this.add.text(width / 2, height / 2 + 120, '[ ГЛАВНОЕ МЕНЮ ]', {
@@ -63,9 +63,10 @@ export default class GameOverScene extends Phaser.Scene {
       padding: { x: 12, y: 6 }
     }).setOrigin(0.5).setDepth(100).setInteractive({ useHandCursor: true });
 
-    menuBtn.on('pointerover', () => menuBtn.setColor('#FFFFFF'));
+    menuBtn.on('pointerover', () => { menuBtn.setColor('#FFFFFF'); audio.buttonHover(); });
     menuBtn.on('pointerout', () => menuBtn.setColor('#AAAAAA'));
     menuBtn.on('pointerdown', () => {
+      audio.buttonClick();
       this.scene.stop('HUDScene');
       this.scene.start('MenuScene');
     });

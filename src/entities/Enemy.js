@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { createDeathEffect } from '../managers/VFX.js';
+import audio from '../managers/AudioManager.js';
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, patrolRange = 100, type = 'basic') {
@@ -11,34 +13,27 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.direction = 1;
     this.speed = 50 + Math.random() * 30;
     this.enemyType = type;
+    this.hp = type === 'tough' ? 2 : 1;
     this.setCollideWorldBounds(true);
     this.body.setSize(24, 24);
     this.body.setOffset(4, 8);
     this.setDepth(5);
   }
 
-  die() {
-    if (!this.active) return;
-    this.createDeathEffect();
-    this.destroy();
+  takeDamage() {
+    this.hp--;
+    this.setTint(0xFF8888);
+    this.scene.time.delayedCall(80, () => {
+      if (this.active) this.clearTint();
+    });
+    if (this.hp <= 0) this.die();
   }
 
-  createDeathEffect() {
-    for (let i = 0; i < 6; i++) {
-      const p = this.scene.add.circle(
-        this.x, this.y,
-        Phaser.Math.Between(2, 5), 0xFF6666, 0.8
-      );
-      p.setDepth(15);
-      this.scene.tweens.add({
-        targets: p,
-        x: p.x + Phaser.Math.Between(-30, 30),
-        y: p.y + Phaser.Math.Between(-30, 30),
-        alpha: 0,
-        duration: 400,
-        onComplete: () => p.destroy()
-      });
-    }
+  die() {
+    if (!this.active) return;
+    createDeathEffect(this.scene, this.x, this.y);
+    audio.enemyDie();
+    this.destroy();
   }
 
   update(time, delta) {

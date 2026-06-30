@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { createBossDeathEffect } from '../managers/VFX.js';
+import audio from '../managers/AudioManager.js';
 
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, bossType) {
@@ -239,6 +241,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.hp -= amount;
     this.setTint(0xFFFFFF);
+    audio.bossHit();
 
     this.scene.time.delayedCall(80, () => {
       if (this.active) this.clearTint();
@@ -246,27 +249,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy() {
-    this.createDeathEffect();
+    createBossDeathEffect(this.scene, this.x, this.y);
     super.destroy();
-  }
-
-  createDeathEffect() {
-    const colors = [0xFF4444, 0xFFD700, 0xFFFFFF, 0xFF8800, 0xFFFF00];
-    for (let i = 0; i < 20; i++) {
-      const color = colors[Phaser.Math.Between(0, colors.length - 1)];
-      const p = this.scene.add.circle(
-        this.x, this.y,
-        Phaser.Math.Between(3, 8), color, 0.9
-      );
-      p.setDepth(20);
-      this.scene.tweens.add({
-        targets: p,
-        x: p.x + Phaser.Math.Between(-60, 60),
-        y: p.y + Phaser.Math.Between(-80, 20),
-        alpha: 0,
-        duration: 600 + Math.random() * 400,
-        onComplete: () => p.destroy()
-      });
-    }
   }
 }

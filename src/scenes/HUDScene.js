@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import state from '../managers/GameState.js';
 
 export default class HUDScene extends Phaser.Scene {
   constructor() {
@@ -30,53 +31,44 @@ export default class HUDScene extends Phaser.Scene {
     this.bossBarFill = null;
 
     this.hudUpdateHandler = () => this.updateHUD();
-    this.registry.events.on('changedata', this.hudUpdateHandler);
+    state.on('changedata', this.hudUpdateHandler);
     this.events.on('shutdown', () => {
-      this.registry.events.off('changedata', this.hudUpdateHandler);
+      state.off('changedata', this.hudUpdateHandler);
     });
     this.updateHUD();
   }
 
   updateHUD() {
-    const hp = this.registry.get('hp') ?? 0;
-    const maxHp = this.registry.get('maxHp') ?? 5;
-    const coins = this.registry.get('coins') ?? 0;
-    const level = this.registry.get('currentLevel') ?? 1;
-    const inBoss = this.registry.get('inBoss') ?? false;
-    const bossHP = this.registry.get('bossHP') ?? 0;
-    const bossMaxHP = this.registry.get('bossMaxHP') ?? 0;
-    const abilityCount = this.registry.get('abilityCount') ?? 0;
-
     const levelNames = ['', 'Ур.1: Звёздные джунгли', 'Ур.2: Ледяная пещера', 'Ур.3: Космическая станция'];
-    this.levelText.setText(levelNames[level] || '');
+    this.levelText.setText(levelNames[state.currentLevel] || '');
 
     let hpDisplay = '';
-    for (let i = 0; i < maxHp; i++) {
-      hpDisplay += i < hp ? '★ ' : '☆ ';
+    for (let i = 0; i < state.maxHp; i++) {
+      hpDisplay += i < state.hp ? '★ ' : '☆ ';
     }
     this.hpText.setText(hpDisplay.trim());
 
-    this.coinText.setText(`● ${coins}`);
+    this.coinText.setText(`● ${state.coins}`);
 
     const abilities = [];
-    if (abilityCount >= 1) abilities.push('Двойной прыжок');
-    if (abilityCount >= 2) abilities.push('Рывок');
+    if (state.abilityCount >= 1) abilities.push('Двойной прыжок');
+    if (state.abilityCount >= 2) abilities.push('Рывок');
     this.abilityText.setText(abilities.join(' | '));
 
     if (this.bossBarBg) { this.bossBarBg.destroy(); this.bossBarBg = null; }
     if (this.bossBarFill) { this.bossBarFill.destroy(); this.bossBarFill = null; }
 
-    if (inBoss && bossMaxHP > 0 && bossHP > 0) {
+    if (state.inBoss && state.bossMaxHP > 0 && state.bossHP > 0) {
       const barWidth = 300;
-      const fillWidth = (bossHP / bossMaxHP) * barWidth;
+      const fillWidth = (state.bossHP / state.bossMaxHP) * barWidth;
 
       this.bossBarBg = this.add.rectangle(400, 48, barWidth, 10, 0x333333).setDepth(100);
       this.bossBarFill = this.add.rectangle(250, 48, fillWidth, 10, 0xFF4444)
         .setOrigin(0, 0.5).setDepth(101);
 
       const bossNames = ['', 'ГИГАНТСКИЙ ЦВЕТОК', 'СНЕЖНЫЙ ГОЛЕМ', 'ТЁМНАЯ ЗВЕЗДА'];
-      this.bossHPText.setText(`${bossNames[level]} [${bossHP}/${bossMaxHP}]`);
-    } else if (inBoss) {
+      this.bossHPText.setText(`${bossNames[state.currentLevel]} [${state.bossHP}/${state.bossMaxHP}]`);
+    } else if (state.inBoss) {
       this.bossHPText.setText('');
     } else {
       this.bossHPText.setText('');
