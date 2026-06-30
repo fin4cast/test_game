@@ -217,11 +217,17 @@ export default class BossScene extends BaseLevelScene {
 
     btn.on('pointerdown', () => {
       this.scene.stop('HUDScene');
-      if (nextLevel === null) {
-        this.scene.start('GameOverScene', { won: true });
-      } else {
-        this.scene.start('GameScene', { level: nextLevel });
-      }
+      this.time.delayedCall(50, () => {
+        try {
+          if (nextLevel === null) {
+            this.scene.start('GameOverScene', { won: true });
+          } else {
+            this.scene.start('GameScene', { level: nextLevel });
+          }
+        } catch (e) {
+          console.error('Scene transition error:', e);
+        }
+      });
     });
 
     const star = this.add.image(400, 130, 'hero').setScale(2).setDepth(100);
