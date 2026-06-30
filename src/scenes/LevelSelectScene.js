@@ -21,19 +21,19 @@ export default class LevelSelectScene extends Phaser.Scene {
     const { width, height } = this.cameras.main;
     this.cameras.main.setBackgroundColor('#000011');
 
-    this.add.text(width / 2, 40, '★ ВЫБОР УРОВНЯ ★', {
+    this.add.text(width / 2, 45, '★ ВЫБОР УРОВНЯ ★', {
       fontSize: '32px', fontFamily: 'Arial', color: '#FFD700',
       stroke: '#FF8C00', strokeThickness: 3
     }).setOrigin(0.5);
 
     const cols = 3;
-    const cardW = 200;
-    const cardH = 160;
-    const gapX = 30;
-    const gapY = 30;
+    const cardW = 190;
+    const cardH = 150;
+    const gapX = 25;
+    const gapY = 25;
     const totalW = cols * cardW + (cols - 1) * gapX;
     const startX = (width - totalW) / 2 + cardW / 2;
-    const startY = 120;
+    const startY = 150;
 
     for (let i = 1; i <= LevelManager.totalLevels; i++) {
       const col = (i - 1) % cols;

@@ -17,7 +17,7 @@ class GameState {
     this._bossHP = 0;
     this._bossMaxHP = 0;
     this._inBoss = false;
-    this._unlockedLevels = 1;
+    this._unlockedLevels = 6;
     this._skin = 'hero';
   }
 
