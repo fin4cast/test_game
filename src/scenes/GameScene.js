@@ -216,6 +216,14 @@ export default class GameScene extends BaseLevelScene {
       }
     });
 
+    this.physics.add.overlap(this.hero, this.meteorGroup, (hero, meteor) => {
+      if (hero.active && meteor.active && !hero.invulnerable) {
+        hero.takeDamage(1);
+        state.hp = hero.hp;
+        this.cameras.main.shake(100, 0.008);
+      }
+    });
+
     this.physics.add.overlap(this.hero, this.collectibles, (hero, item) => {
       if (!item.active) return;
       const type = item.getData('type');
