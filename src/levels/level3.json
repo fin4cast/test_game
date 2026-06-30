@@ -27,10 +27,9 @@
     { "x": 5500, "y": 552 }
   ],
   "meteors": [
-    { "interval": 2000, "spawnX": [100, 1500] },
-    { "interval": 2500, "spawnX": [1400, 3000] },
-    { "interval": 2200, "spawnX": [2800, 4300] },
-    { "interval": 1800, "spawnX": [4200, 5600] }
+    { "interval": 800, "spawnX": [50, 2000] },
+    { "interval": 1000, "spawnX": [1500, 4000] },
+    { "interval": 1200, "spawnX": [3000, 5700] }
   ],
   "enemies": [
     { "x": 400, "y": 500, "patrolRange": 80 },

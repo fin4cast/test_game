@@ -28,7 +28,6 @@ export default class GameScene extends BaseLevelScene {
 
     this.cameras.main.fadeIn(300);
     this.scene.launch('HUDScene');
-    this.meteorGroup = null;
 
     this.physics.world.setBounds(0, -200, this.levelData.worldWidth, 1000);
 
@@ -119,37 +118,19 @@ export default class GameScene extends BaseLevelScene {
   }
 
   setupMeteors() {
-    this.meteorGroup = null;
-    this.meteorTimers = null;
     if (!this.levelData.meteors) return;
-    this.meteorGroup = this.physics.add.group({ allowGravity: false });
-    this.physics.add.overlap(this.hero, this.meteorGroup, (hero, meteor) => {
-      if (hero.active && meteor.active && !hero.invulnerable) {
-        hero.takeDamage(1);
-        state.hp = hero.hp;
-        this.cameras.main.shake(100, 0.008);
-      }
-    });
 
-    const debugMeteor = new Meteor(this, this.hero.x + 300, this.hero.y - 150, Math.PI / 2);
-    debugMeteor.setScale(2);
-    this.meteorGroup.add(debugMeteor);
-
-    this.meteorTimers = [];
-
-    this.levelData.meteors.forEach((cfg, idx) => {
-      const timer = this.time.addEvent({
+    this.levelData.meteors.forEach((cfg) => {
+      this.time.addEvent({
         delay: cfg.interval,
         callback: () => {
           if (!this.hero || !this.hero.active) return;
           const spawnX = Phaser.Math.Between(cfg.spawnX[0], cfg.spawnX[1]);
           const angle = Math.PI / 2 + (Math.random() - 0.5) * 0.6;
-          const meteor = new Meteor(this, spawnX, -30, angle);
-          this.meteorGroup.add(meteor);
+          new Meteor(this, spawnX, -30, angle);
         },
         loop: true
       });
-      this.meteorTimers.push(timer);
     });
   }
 
@@ -275,10 +256,5 @@ export default class GameScene extends BaseLevelScene {
     this.flyingEnemyGroup.getChildren().forEach(enemy => {
       if (enemy.active) enemy.update(time, delta);
     });
-    if (this.meteorGroup) {
-      this.meteorGroup.getChildren().forEach(meteor => {
-        if (meteor.active) meteor.update();
-      });
-    }
   }
 }

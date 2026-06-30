@@ -13,7 +13,6 @@ export default class Meteor extends Phaser.Physics.Arcade.Sprite {
     this.body.setVelocityX(Math.cos(angle) * speed);
     this.body.setVelocityY(Math.sin(angle) * speed);
     this.setRotation(angle + Math.PI / 2);
-
     this.setScale(0.6 + Math.random() * 0.4);
 
     scene.tweens.add({
@@ -22,11 +21,24 @@ export default class Meteor extends Phaser.Physics.Arcade.Sprite {
       duration: 400,
       repeat: -1
     });
+
+    scene.time.delayedCall(4000, () => {
+      if (this.active) this.destroy();
+    });
+
+    this._collider = scene.physics.add.overlap(scene.hero, this, (h, m) => {
+      if (h.active && m.active && !h.invulnerable) {
+        h.takeDamage(1);
+        scene.cameras.main.shake(100, 0.008);
+      }
+    });
   }
 
-  update() {
-    if (this.y > 650 || this.x < -50 || this.x > this.scene.levelData.worldWidth + 50) {
-      this.destroy();
+  destroy() {
+    if (this._collider) {
+      this._collider.destroy();
+      this._collider = null;
     }
+    super.destroy();
   }
 }
