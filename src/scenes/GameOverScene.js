@@ -52,7 +52,7 @@ export default class GameOverScene extends Phaser.Scene {
     retryBtn.on('pointerout', () => retryBtn.setColor('#FFFFFF'));
     retryBtn.on('pointerdown', () => {
       audio.buttonClick();
-      state.reset();
+      state.resetRun();
       const lvl = this.won ? 1 : this.level;
       state.currentLevel = lvl;
       this.scene.start('GameScene', { level: lvl });

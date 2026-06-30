@@ -17,12 +17,29 @@
     { "x": 5100, "y": 334, "width": 200, "height": 32, "texture": "platform_metal" },
     { "x": 5500, "y": 584, "width": 1200, "height": 32, "texture": "platform_metal" }
   ],
+  "spikes": [
+    { "x": 500, "y": 552 },
+    { "x": 1400, "y": 552 },
+    { "x": 1920, "y": 452 },
+    { "x": 2350, "y": 352 },
+    { "x": 2800, "y": 552 },
+    { "x": 3250, "y": 452 },
+    { "x": 3950, "y": 402 },
+    { "x": 4350, "y": 302 },
+    { "x": 5500, "y": 552 }
+  ],
+  "meteors": [
+    { "interval": 2500, "spawnX": [200, 700] }
+  ],
   "enemies": [
     { "x": 400, "y": 500, "patrolRange": 80 },
     { "x": 1200, "y": 500, "patrolRange": 80 },
     { "x": 2500, "y": 500, "patrolRange": 80 },
     { "x": 3900, "y": 350, "patrolRange": 40 },
-    { "x": 5300, "y": 500, "patrolRange": 70 }
+    { "x": 5300, "y": 500, "patrolRange": 70 },
+    { "x": 1850, "y": 300, "patrolRange": 80, "type": "flying" },
+    { "x": 3200, "y": 250, "patrolRange": 60, "type": "flying" },
+    { "x": 5000, "y": 300, "patrolRange": 100, "type": "flying" }
   ],
   "collectibles": [
     { "x": 200, "y": 500, "type": "coin" },

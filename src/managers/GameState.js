@@ -19,6 +19,14 @@ class GameState {
     this._inBoss = false;
   }
 
+  resetRun() {
+    this._hp = 3;
+    this._coins = 0;
+    this._bossHP = 0;
+    this._bossMaxHP = 0;
+    this._inBoss = false;
+  }
+
   set(key, value) {
     const privateKey = '_' + key;
     if (privateKey in this) {

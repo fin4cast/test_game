@@ -18,6 +18,11 @@ export default class BootScene extends Phaser.Scene {
     this.generateCoinTexture();
     this.generateHeartTexture();
     this.generateParticleTexture();
+    this.generateSpikeTexture();
+    this.generateShurikenTexture();
+    this.generateMeteorTexture();
+    this.generateFlyingEnemyTexture();
+    this.generateSawTexture();
 
     this.scene.start('MenuScene');
   }
@@ -170,6 +175,110 @@ export default class BootScene extends Phaser.Scene {
     g.fillCircle(16, 8, 8);
     g.fillTriangle(0, 10, 24, 10, 12, 22);
     g.generateTexture('heart', 24, 24);
+    g.destroy();
+  }
+
+  generateSpikeTexture() {
+    const g = this.add.graphics();
+    g.fillStyle(0xFF2222);
+    g.beginPath();
+    g.moveTo(16, 0);
+    g.lineTo(0, 32);
+    g.lineTo(32, 32);
+    g.closePath();
+    g.fillPath();
+    g.lineStyle(2, 0x880000);
+    g.beginPath();
+    g.moveTo(16, 0);
+    g.lineTo(0, 32);
+    g.lineTo(32, 32);
+    g.closePath();
+    g.strokePath();
+    g.generateTexture('spike', 32, 32);
+    g.destroy();
+  }
+
+  generateShurikenTexture() {
+    const g = this.add.graphics();
+    const cx = 16, cy = 16;
+    g.fillStyle(0xCC2222);
+    g.beginPath();
+    for (let i = 0; i < 4; i++) {
+      const a = (i * Math.PI / 2) - Math.PI / 4;
+      const tipX = cx + 14 * Math.cos(a);
+      const tipY = cy + 14 * Math.sin(a);
+      const midX = cx + 4 * Math.cos(a);
+      const midY = cy + 4 * Math.sin(a);
+      const rX = cx + 4 * Math.cos(a - Math.PI / 2);
+      const rY = cy + 4 * Math.sin(a - Math.PI / 2);
+      const lX = cx + 4 * Math.cos(a + Math.PI / 2);
+      const lY = cy + 4 * Math.sin(a + Math.PI / 2);
+      if (i === 0) g.moveTo(tipX, tipY);
+      g.lineTo(rX, rY);
+      g.lineTo(midX, midY);
+      g.lineTo(lX, lY);
+      g.lineTo(tipX, tipY);
+    }
+    g.closePath();
+    g.fillPath();
+    g.fillStyle(0xFFFFFF);
+    g.fillCircle(cx, cy, 3);
+    g.generateTexture('shuriken', 32, 32);
+    g.destroy();
+  }
+
+  generateMeteorTexture() {
+    const g = this.add.graphics();
+    g.fillStyle(0xFF6600);
+    g.fillCircle(12, 12, 10);
+    g.fillStyle(0xFF4400);
+    g.fillCircle(12, 12, 6);
+    g.fillStyle(0xFFCC00);
+    g.fillCircle(12, 12, 3);
+    g.fillStyle(0xFF4400, 0.6);
+    g.fillTriangle(12, 12, 0, 18, 12, 24);
+    g.fillTriangle(12, 12, 24, 18, 12, 24);
+    g.generateTexture('meteor', 24, 32);
+    g.destroy();
+  }
+
+  generateFlyingEnemyTexture() {
+    const g = this.add.graphics();
+    g.fillStyle(0x4488FF);
+    g.fillCircle(16, 16, 12);
+    g.fillStyle(0x66AAFF);
+    g.fillTriangle(4, 8, 0, 0, 10, 8);
+    g.fillTriangle(28, 8, 32, 0, 22, 8);
+    g.fillTriangle(4, 24, 0, 32, 10, 24);
+    g.fillTriangle(28, 24, 32, 32, 22, 24);
+    g.fillStyle(0xFFFFFF);
+    g.fillCircle(12, 13, 4);
+    g.fillCircle(20, 13, 4);
+    g.fillStyle(0x000000);
+    g.fillCircle(12, 13, 2);
+    g.fillCircle(20, 13, 2);
+    g.generateTexture('flying_enemy', 32, 32);
+    g.destroy();
+  }
+
+  generateSawTexture() {
+    const g = this.add.graphics();
+    g.fillStyle(0x888888);
+    g.fillCircle(16, 16, 14);
+    g.fillStyle(0x666666);
+    g.fillCircle(16, 16, 10);
+    g.fillStyle(0xAAAAAA);
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI / 4);
+      g.fillTriangle(
+        16 + 10 * Math.cos(a), 16 + 10 * Math.sin(a),
+        16 + 16 * Math.cos(a - 0.3), 16 + 16 * Math.sin(a - 0.3),
+        16 + 16 * Math.cos(a + 0.3), 16 + 16 * Math.sin(a + 0.3)
+      );
+    }
+    g.fillStyle(0x444444);
+    g.fillCircle(16, 16, 4);
+    g.generateTexture('saw', 32, 32);
     g.destroy();
   }
 

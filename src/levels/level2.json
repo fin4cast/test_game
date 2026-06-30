@@ -17,12 +17,26 @@
     { "x": 4450, "y": 484, "width": 200, "height": 32, "texture": "platform_ice" },
     { "x": 4800, "y": 584, "width": 1600, "height": 32, "texture": "platform_ice" }
   ],
+  "spikes": [
+    { "x": 400, "y": 552 },
+    { "x": 1300, "y": 552 },
+    { "x": 1650, "y": 502 },
+    { "x": 1950, "y": 402 },
+    { "x": 2500, "y": 552 },
+    { "x": 3120, "y": 452 },
+    { "x": 3520, "y": 352 },
+    { "x": 3920, "y": 252 },
+    { "x": 4220, "y": 352 },
+    { "x": 5500, "y": 552 }
+  ],
   "enemies": [
     { "x": 1000, "y": 500, "patrolRange": 80 },
     { "x": 2300, "y": 500, "patrolRange": 100 },
     { "x": 3050, "y": 400, "patrolRange": 50 },
     { "x": 3450, "y": 300, "patrolRange": 40 },
-    { "x": 5200, "y": 500, "patrolRange": 100 }
+    { "x": 5200, "y": 500, "patrolRange": 100 },
+    { "x": 1600, "y": 300, "patrolRange": 100, "type": "flying" },
+    { "x": 3600, "y": 250, "patrolRange": 80, "type": "flying" }
   ],
   "collectibles": [
     { "x": 200, "y": 500, "type": "coin" },
